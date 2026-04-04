@@ -3,6 +3,7 @@ name: Build Docs
 on:
   push:
   workflow_call:
+  workflow_dispatch:
 
 jobs:
   build:
@@ -37,16 +38,20 @@ jobs:
           path: ./vendor/Umbrella
           key: vendor-umbrella-${{ steps.get-umbrella-remote-sha.outputs.UMBRELLA_HEAD_SHA }}
 
-      - name: Setup Umbrella
+      - name: Setup Umbrella repo
         if: steps.cache-umbrella-repo.outputs.cache-hit != 'true'
         run: |
           git clone --depth=1 --no-tags https://github.com/PZ-Umbrella/Umbrella.git vendor/Umbrella
+          
+      - name: Set Umbrella env var
+        run: |
           cd vendor/Umbrella/library
           echo "PZ_UMBRELLA=$(pwd)" >> $GITHUB_ENV
           cd ../../../
 
       - name: Build website with Sphinx
         run: |
+          echo "PZ_UMBRELLA is set to: $PZ_UMBRELLA"
           cd StarlitLibrary/docs
           make html
 
