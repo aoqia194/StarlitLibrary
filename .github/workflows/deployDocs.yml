@@ -4,11 +4,14 @@ on:
   push:
     branches:
       - "main"
+    paths:
+      - "docs/source/**"
+      - "Contents/mods/**/*.lua"
   workflow_dispatch:
 
 jobs:
   build:
-    name: build
+    name: Build Docs
     uses: ./.github/workflows/buildDocs.yml
 
   deploy:
